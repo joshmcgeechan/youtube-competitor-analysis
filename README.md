@@ -4,14 +4,13 @@ Analyze any YouTube channel against 4-7 competitors. Fetches video data, scores 
 
 ## Quick Start
 
-```bash
-cd "C:\Claude Code\YouTube Competitor Analysis"
+Open PowerShell and run:
 
-python execution/main.py \
-  --channel @clienthandle \
-  --competitors @comp1 @comp2 @comp3 @comp4 \
-  --days 60
+```powershell
+cd "C:\Claude Code\YouTube Competitor Analysis"; python execution/main.py --channel "@clienthandle" --competitors "@comp1" "@comp2" "@comp3" "@comp4" --days 60
 ```
+
+**Important:** In PowerShell, each `@handle` must be wrapped in double quotes — PowerShell treats `@` as a special character.
 
 The pipeline runs automatically and prints a Google Slides link when done.
 
@@ -44,7 +43,7 @@ A `credentials.json` file is required for Google Slides access. On first run, it
 
 ### Python Packages
 
-```bash
+```powershell
 python -m pip install -r requirements.txt
 ```
 
@@ -52,8 +51,8 @@ python -m pip install -r requirements.txt
 
 ### Basic Run
 
-```bash
-python execution/main.py --channel @mkbhd --competitors @LinusTechTips @JerryRigEverything @UnboxTherapy @austinevans --days 60
+```powershell
+python execution/main.py --channel "@mkbhd" --competitors "@LinusTechTips" "@JerryRigEverything" "@UnboxTherapy" "@austinevans" --days 60
 ```
 
 ### Options
@@ -67,8 +66,8 @@ python execution/main.py --channel @mkbhd --competitors @LinusTechTips @JerryRig
 
 ### Data-Only Run (No Slides)
 
-```bash
-python execution/main.py --channel @handle --competitors @c1 @c2 @c3 @c4 --skip-slides
+```powershell
+python execution/main.py --channel "@handle" --competitors "@c1" "@c2" "@c3" "@c4" --skip-slides
 ```
 
 Analytics and AI insights are still saved to `.tmp/` — useful for debugging or if Google credentials aren't set up.
