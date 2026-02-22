@@ -32,10 +32,20 @@ def get_credentials(server_mode: bool = False) -> Credentials:
     """
     creds = None
 
-    # Cloud deploy: load token from env var
+    # Cloud deploy: load token from env var or Streamlit secrets
     token_json_env = os.getenv("GOOGLE_TOKEN_JSON")
     if token_json_env:
         creds = Credentials.from_authorized_user_info(json.loads(token_json_env), SCOPES)
+
+    if not creds:
+        try:
+            import streamlit as st
+            token_section = dict(st.secrets["google_token"])
+            # Convert scopes list from streamlit's format
+            token_section["scopes"] = list(token_section.get("scopes", SCOPES))
+            creds = Credentials.from_authorized_user_info(token_section, SCOPES)
+        except Exception:
+            pass
 
     # Local: load from file
     if not creds and _TOKEN_PATH.exists():
@@ -58,8 +68,8 @@ def get_credentials(server_mode: bool = False) -> Credentials:
         flow = InstalledAppFlow.from_client_secrets_file(str(_CREDENTIALS_PATH), SCOPES)
         creds = flow.run_local_server(port=0)
 
-    # Save for next run (skip if running from env var only)
-    if not token_json_env:
+    # Save for next run (skip if running from env var or Streamlit secrets)
+    if not token_json_env and not server_mode:
         with open(_TOKEN_PATH, "w") as f:
             f.write(creds.to_json())
 
