@@ -679,7 +679,11 @@ def generate_report(analytics: dict, insights: dict | None = None, server_mode: 
 
     # Step 1: Copy template via Drive API
     now = datetime.now(timezone.utc)
-    report_title = f"YouTube Analytics Report — {now.strftime('%B %Y')}"
+    channel_name = analytics.get("channel", {}).get("channel_name", "")
+    if channel_name:
+        report_title = f"{channel_name} YouTube Analytics Report — {now.strftime('%B %Y')}"
+    else:
+        report_title = f"YouTube Analytics Report — {now.strftime('%B %Y')}"
 
     copy_response = _retry_api(
         drive_service.files().copy(
