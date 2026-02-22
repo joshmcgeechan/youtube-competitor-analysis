@@ -653,12 +653,13 @@ def _build_fallback_takeaways(analytics: dict) -> list[str]:
 # Core report generator
 # ---------------------------------------------------------------------------
 
-def generate_report(analytics: dict, insights: dict | None = None) -> str:
+def generate_report(analytics: dict, insights: dict | None = None, server_mode: bool = False) -> str:
     """Generate a filled Google Slides report from analytics data.
 
     Args:
         analytics: Processed analytics dict (from .tmp/analytics.json)
         insights: Optional AI insights dict (from .tmp/insights.json)
+        server_mode: If True, use env-var-based auth (no browser).
 
     Returns:
         Google Slides URL for the generated report.
@@ -673,8 +674,8 @@ def generate_report(analytics: dict, insights: dict | None = None) -> str:
             "Run 'python execution/slides_template.py' first to create the template."
         )
 
-    slides_service = build_slides_service()
-    drive_service = build_drive_service()
+    slides_service = build_slides_service(server_mode)
+    drive_service = build_drive_service(server_mode)
 
     # Step 1: Copy template via Drive API
     now = datetime.now(timezone.utc)
@@ -781,6 +782,15 @@ def generate_report(analytics: dict, insights: dict | None = None) -> str:
                 body={"requests": fill_requests},
             ).execute
         )
+
+    # Make the report viewable by anyone with the link
+    _retry_api(
+        drive_service.permissions().create(
+            fileId=report_id,
+            body={"type": "anyone", "role": "reader"},
+            fields="id",
+        ).execute
+    )
 
     url = f"https://docs.google.com/presentation/d/{report_id}/edit"
     print(f"  Report filled successfully")
