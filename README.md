@@ -2,7 +2,20 @@
 
 Analyze any YouTube channel against 4-7 competitors. Fetches video data, scores outliers, generates AI-powered insights, and delivers a polished Google Slides report — all from one terminal command.
 
-## Quick Start
+## Web App
+
+A Streamlit web UI is available for non-technical users. No terminal or Python needed — just open the link in a browser, enter the password, fill in the channels, and get a Google Slides report.
+
+**Hosted at:** Streamlit Community Cloud (password-protected)
+
+To run locally instead:
+
+```powershell
+python -m pip install -r requirements.txt
+streamlit run app.py
+```
+
+## CLI Quick Start
 
 Open PowerShell and run:
 
@@ -93,7 +106,11 @@ The `.tmp/` folder is overwritten each run. The Slides report is the deliverable
 
 ```
 YouTube Competitor Analysis/
+  app.py              Streamlit web UI
+  .streamlit/         Streamlit config (dark theme)
   execution/          Python scripts (pipeline stages)
+    pipeline.py       Reusable pipeline logic (used by CLI and web)
+    main.py           CLI entry point
   directives/         Markdown SOPs (instructions for each stage)
   .tmp/               Intermediate files (overwritten each run)
   .env                API keys (not committed)
